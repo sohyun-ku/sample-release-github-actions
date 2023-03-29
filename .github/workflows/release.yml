@@ -27,5 +27,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.TOKEN }}
-          files: ./build/libs/sample-${{ steps.extract_version.outputs.tag }}.jar
+          files: ./build/libs/sample-github-actions-${{ steps.extract_version.outputs.tag }}.jar
           generate_release_notes: true
