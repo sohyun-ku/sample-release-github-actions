@@ -1,0 +1,27 @@
+name: Tag
+
+run-name: Create Tag
+
+on:
+  push:
+    branches:
+      - 'release/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: master
+          token: ${{ secrets.TOKEN }}
+      - name: Set github config
+        run: |
+          git config user.name sohyun-ku
+          git config user.email sohyun-ku@nts-corp.com
+      - name: Extract version
+        run: echo "version=$(echo '${{ github.event.head_commit.message }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')" >> $GITHUB_OUTPUT
+        id: extract_version
+      - name: Create tag
+        run: ./gradlew :release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${{ steps.extract_version.outputs.version }}
