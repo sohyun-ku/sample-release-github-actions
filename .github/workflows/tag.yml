@@ -3,25 +3,28 @@ name: Tag
 run-name: Create Tag
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - 'release/*'
+      - master
 
 jobs:
-  build:
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: master
           token: ${{ secrets.TOKEN }}
-      - name: Set github config
+      - name: Extract version
+        run: echo "version=$(echo '${{ github.event.pull_request.title }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')" >> $GITHUB_OUTPUT
+        id: extract_version
+      - name: Set git config
         run: |
           git config user.name sohyun-ku
           git config user.email sohyun-ku@nts-corp.com
-      - name: Extract version
-        run: echo "version=$(echo '${{ github.event.head_commit.message }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')" >> $GITHUB_OUTPUT
-        id: extract_version
+          git branch release/${{ steps.extract_version.outputs.version }}
       - name: Create tag
         run: ./gradlew :release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${{ steps.extract_version.outputs.version }}
