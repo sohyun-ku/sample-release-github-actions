@@ -32,6 +32,7 @@ configure<ReleaseExtension> {
     ignoredSnapshotDependencies.set(listOf("net.researchgate:gradle-release"))
     pushReleaseVersionBranch.set("release/${ releaseVersion }")
     tagTemplate.set("v${ releaseVersion }")
+    preTagCommitMessage.set("Release ")
     newVersionCommitMessage.set("Update next development version after Release")
     with(git) {
         requireBranch.set("master")
