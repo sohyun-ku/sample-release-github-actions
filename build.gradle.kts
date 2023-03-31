@@ -9,7 +9,6 @@ plugins {
 }
 
 group = "com.example"
-version = requireNotNull(property("version"))
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -24,7 +23,7 @@ dependencies {
 
 configure<ReleaseExtension> {
     val releaseVersion = if (hasProperty("release.releaseVersion")) {
-        requireNotNull(property("release.releaseVersion"))
+        property("release.releaseVersion")
     } else {
         version
     }
